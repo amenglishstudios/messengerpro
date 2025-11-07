@@ -37,7 +37,7 @@ function getInitials(name) {
 function addMessage(speaker, text, timestamp = null) {
   // Ensure any stray typing indicators are removed (prevents auto-popup on send)
   const ti = conversationEl.querySelector('.typing-indicator');
-  if (ti) ti.remove(); // guarantee no auto typing bubble
+  if (ti) ti.remove();
 
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', `person-${speaker}`);
@@ -48,7 +48,7 @@ function addMessage(speaker, text, timestamp = null) {
   const initials = getInitials(name);
 
   const avatar = document.createElement('div');
-  avatar.className = 'avatar-initials'; // fixed class name (ASCII hyphen)
+  avatar.className = 'avatar-initials';
   avatar.textContent = initials;
 
   const bubbleWrapper = document.createElement('div');
@@ -78,6 +78,7 @@ function addMessage(speaker, text, timestamp = null) {
     messageDiv.appendChild(bubbleWrapper);
     messageDiv.appendChild(avatar);
   }
+
   conversationEl.appendChild(messageDiv);
   conversationEl.scrollTop = conversationEl.scrollHeight;
 }
@@ -98,9 +99,9 @@ sendBtn.addEventListener('click', () => {
   messageInput.focus();
 });
 
-// Export PNG
+// Export PNG (screen only)
 exportImageBtn.addEventListener('click', async () => {
-  const canvas = await html2canvas(document.querySelector('.iphone'));
+  const canvas = await html2canvas(document.querySelector('.screen'));
   const dataURL = canvas.toDataURL('image/png');
 
   const link = document.createElement('a');
@@ -112,7 +113,7 @@ exportImageBtn.addEventListener('click', async () => {
 // Export PDF
 exportPdfBtn.addEventListener('click', async () => {
   const { jsPDF } = window.jspdf;
-  const canvas = await html2canvas(document.querySelector('.iphone'), { backgroundColor: '#ffffff' });
+  const canvas = await html2canvas(document.querySelector('.screen'), { backgroundColor: '#ffffff' });
   const imgData = canvas.toDataURL('image/png');
 
   const pdf = new jsPDF('p', 'pt', 'a4');
