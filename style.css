@@ -100,6 +100,8 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+
+  padding-top: 10px; /* safe area to avoid corner clipping */
 }
 
 /* Notch & Status Bar */
@@ -112,10 +114,12 @@ body {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5; /* put notch behind the status bar to avoid clipping icons */
+  z-index: 10;
 }
 
-.status-bar { border-top-left-radius: 60px; border-top-right-radius: 60px;
+.status-bar {
+  margin: 8px 12px 6px;           /* inset from rounded corners */
+  border-radius: 12px;
   height: 32px;
   background: #000;
   color: #fff;
@@ -124,7 +128,6 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
-  z-index: 10; /* above notch */
 }
 
 .status-bar .time {
@@ -153,7 +156,7 @@ body {
 }
 
 /* Conversation */
-.conversation { /* leave some breathing room under the contact name */
+.conversation {
   flex: 1;
   padding: 12px 10px;
   background: #e5ddd5;
@@ -165,7 +168,6 @@ body {
 /* Messages */
 .message {
   display: flex;
-  width: 100%; /* allow left/right alignment across full row */
   margin: 6px 0;
   align-items: flex-end;
   position: relative;
@@ -178,26 +180,14 @@ body {
 
 .person-b {
   justify-content: flex-end;
-  flex-direction: row; /* keep row; we'll order elements in JS */
+  flex-direction: row-reverse;
 }
 
-/* Avatar (initials) */
-.avatar-initials {
+.avatar {
   width: 30px;
   height: 30px;
   border-radius: 50%;
   margin: 0 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: #fff;
-  background: #9e9e9e; /* default */
-  flex: 0 0 30px;
-}
-.person-b .avatar-initials {
-  background: #1565c0;
 }
 
 .bubble-wrapper {
@@ -246,7 +236,6 @@ body {
   margin-top: 2px;
 }
 
-/* Optional typing indicator class (disabled by default in JS) */
 .typing-indicator {
   background: #007aff;
   color: white;
