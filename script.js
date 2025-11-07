@@ -10,12 +10,6 @@ const exportImageBtn = document.getElementById('exportImageBtn');
 const exportPdfBtn = document.getElementById('exportPdfBtn');
 const exportGifBtn = document.getElementById('exportGifBtn');
 
-// Optional: avatar image URLs
-const avatars = {
-  a: "https://i.imgur.com/NJ6Yc7n.png",
-  b: "https://i.imgur.com/Yc3GfKZ.png"
-};
-
 function currentTimestamp() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
@@ -31,13 +25,26 @@ function createDeleteButton() {
   return btn;
 }
 
+function getInitials(name) {
+  return name
+    .split(' ')
+    .map(part => part.charAt(0).toUpperCase())
+    .join('')
+    .substring(0, 2);
+}
+
 function addMessage(speaker, text, timestamp = null) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', `person-${speaker}`);
 
-  const avatar = document.createElement('img');
-  avatar.className = 'avatar';
-  avatar.src = avatars[speaker];
+  const name = speaker === 'a'
+    ? (nameAInput.value.trim() || 'Character A')
+    : (nameBInput.value.trim() || 'Character B');
+  const initials = getInitials(name);
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar‑initials';
+  avatar.textContent = initials;
 
   const bubbleWrapper = document.createElement('div');
   bubbleWrapper.classList.add('bubble-wrapper');
@@ -47,7 +54,6 @@ function addMessage(speaker, text, timestamp = null) {
   bubble.textContent = text;
   bubble.appendChild(createDeleteButton());
 
-  const name = speaker === 'a' ? (nameAInput.value || 'Character A') : (nameBInput.value || 'Character B');
   const nameLabel = document.createElement('div');
   nameLabel.className = 'name-label';
   nameLabel.textContent = name;
@@ -66,36 +72,6 @@ function addMessage(speaker, text, timestamp = null) {
   conversationEl.scrollTop = conversationEl.scrollHeight;
 }
 
-function showTypingIndicator(speaker) {
-  removeTypingIndicator();
-  const typingDiv = document.createElement('div');
-  typingDiv.classList.add('message', `person-${speaker}`);
-  typingDiv.id = 'typing-indicator';
-
-  const avatar = document.createElement('img');
-  avatar.className = 'avatar';
-  avatar.src = avatars[speaker];
-
-  const bubbleWrapper = document.createElement('div');
-  bubbleWrapper.classList.add('bubble-wrapper');
-
-  const bubble = document.createElement('div');
-  bubble.classList.add('typing-indicator');
-  bubble.textContent = 'Typing…';
-
-  bubbleWrapper.appendChild(bubble);
-  typingDiv.appendChild(avatar);
-  typingDiv.appendChild(bubbleWrapper);
-  conversationEl.appendChild(typingDiv);
-  conversationEl.scrollTop = conversationEl.scrollHeight;
-}
-
-function removeTypingIndicator() {
-  const existing = document.getElementById('typing-indicator');
-  if (existing) existing.remove();
-}
-
-// Handle sending a message
 sendBtn.addEventListener('click', () => {
   const text = messageInput.value.trim();
   if (!text) return;
@@ -108,13 +84,9 @@ sendBtn.addEventListener('click', () => {
 
   addMessage(speaker, text);
   messageInput.value = '';
-
-  const nextSpeaker = speaker === 'a' ? 'b' : 'a';
-  showTypingIndicator(nextSpeaker);
-  setTimeout(removeTypingIndicator, 1500);
 });
 
-// Export as PNG
+// Export PNG
 exportImageBtn.addEventListener('click', async () => {
   const canvas = await html2canvas(document.querySelector('.iphone'));
   const dataURL = canvas.toDataURL('image/png');
@@ -125,7 +97,7 @@ exportImageBtn.addEventListener('click', async () => {
   link.click();
 });
 
-// Export as PDF
+// Export PDF
 exportPdfBtn.addEventListener('click', async () => {
   const { jsPDF } = window.jspdf;
   const canvas = await html2canvas(document.querySelector('.iphone'), { backgroundColor: '#ffffff' });
@@ -140,7 +112,7 @@ exportPdfBtn.addEventListener('click', async () => {
   pdf.save('conversation.pdf');
 });
 
-// Export as GIF
+// Export GIF
 exportGifBtn.addEventListener('click', async () => {
   const messages = [...conversationEl.children];
   const gif = new GIF({ workers: 2, quality: 10 });
