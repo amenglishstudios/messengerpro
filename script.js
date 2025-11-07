@@ -37,7 +37,7 @@ function getInitials(name) {
 function addMessage(speaker, text, timestamp = null) {
   // Ensure any stray typing indicators are removed (prevents auto-popup on send)
   const ti = conversationEl.querySelector('.typing-indicator');
-  if (ti) ti.remove();
+  if (ti) ti.remove(); // guarantee no auto typing bubble
 
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', `person-${speaker}`);
@@ -71,8 +71,13 @@ function addMessage(speaker, text, timestamp = null) {
   bubbleWrapper.appendChild(nameLabel);
   bubbleWrapper.appendChild(timeEl);
 
-  messageDiv.appendChild(avatar);
-  messageDiv.appendChild(bubbleWrapper);
+  if (speaker === 'a') {
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(bubbleWrapper);
+  } else {
+    messageDiv.appendChild(bubbleWrapper);
+    messageDiv.appendChild(avatar);
+  }
   conversationEl.appendChild(messageDiv);
   conversationEl.scrollTop = conversationEl.scrollHeight;
 }
